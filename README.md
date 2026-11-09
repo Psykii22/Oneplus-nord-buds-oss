@@ -7,8 +7,8 @@ The application operates without the proprietary HeyMelody mobile application or
 ---
 
 ## Demonstration
+https://github.com/user-attachments/assets/143addbf-dd58-4144-a304-59f0b0d15f62
 
-https://github.com/Psykii22/Oneplus-nord-buds-oss/raw/main/assets/demo.mp4
 
 > [!NOTE]
 > If your browser does not render the inline HTML5 player above, you can access the demo video directly at [assets/demo.mp4](assets/demo.mp4).
