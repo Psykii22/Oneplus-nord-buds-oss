@@ -1,0 +1,26 @@
+# Rust / Cargo build artifacts
+**/target/
+src-tauri/target/
+**/*.rs.bk
+Cargo.lock
+
+# Node / Web dependencies (if any)
+node_modules/
+dist/
+
+# OS and Editor artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.*
+
+# Release archives
+*.zip
+*.msi
+*.exe

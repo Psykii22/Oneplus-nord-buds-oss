@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="data:,">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nord Buds</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            border: 0 solid transparent !important;
+            border-width: 0 !important;
+            outline: none !important;
+            box-shadow: none !important;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            overflow: hidden;
+            background: transparent !important;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #fafafa;
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            padding: 0;
+            display: flex;
+        }
+
+        /* Translucent Frosted Glass App Shell */
+        .app-shell {
+            background-color: rgba(18, 18, 24, 0.82) !important;
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: none !important;
+        }
+
+        /* Translucent dark cards */
+        .card-bg {
+            background-color: rgba(30, 30, 38, 0.65) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            outline: none !important;
+            border-radius: 14px;
+        }
+
+        /* Translucent inner metric box */
+        .inner-box {
+            background-color: rgba(12, 12, 16, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.04) !important;
+            outline: none !important;
+            border-radius: 10px;
+        }
+
+        /* Scaled-down Noise Control Circle Buttons */
+        .btn-circle {
+            background-color: rgba(50, 50, 60, 0.75) !important;
+            color: #71717a !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            outline: none !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .btn-circle:hover {
+            background-color: rgba(70, 70, 82, 0.85) !important;
+            color: #a1a1aa !important;
+        }
+
+        .btn-circle-active {
+            background-color: #007aff !important; /* Apple System Blue */
+            color: #ffffff !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: 0 4px 14px rgba(0, 122, 255, 0.4) !important;
+            cursor: pointer;
+        }
+
+        /* EQ Pill Buttons */
+        .btn-pill {
+            background-color: rgba(50, 50, 60, 0.75) !important;
+            color: #a1a1aa !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            outline: none !important;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .btn-pill:hover {
+            background-color: rgba(70, 70, 82, 0.85) !important;
+            color: #fafafa !important;
+        }
+
+        .btn-pill-active {
+            background-color: #fafafa !important;
+            color: #09090b !important;
+            border: none !important;
+            outline: none !important;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        svg { shape-rendering: geometricPrecision; }
+    </style>
+</head>
+<body>
+
+    <!-- Outermost App Shell with smooth rounded corners -->
+    <div class="app-shell">
+
+        <!-- Card 1: Top Header / Device Status (Draggable with data-tauri-drag-region) -->
+        <div data-tauri-drag-region class="card-bg px-3 py-2.5 flex justify-between items-center cursor-move select-none transition">
+            <div class="flex items-center pointer-events-none">
+                <!-- Exact twin vertical earbuds matching user reference -->
+                <svg class="w-6 h-6 text-white mr-2.5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                    <g transform="rotate(-6 8 8)">
+                        <circle cx="8" cy="7" r="3.2"/>
+                        <rect x="7" y="9.5" width="2" height="7.5" rx="1"/>
+                    </g>
+                    <g transform="rotate(6 16 8)">
+                        <circle cx="16" cy="7" r="3.2"/>
+                        <rect x="15" y="9.5" width="2" height="7.5" rx="1"/>
+                    </g>
+                </svg>
+                <div>
+                    <h1 class="text-[16px] font-bold text-white tracking-tight leading-none mb-1">Buds</h1>
+                    <p id="status-text" class="text-[11px] text-[#71717a] font-medium leading-none">Click to connect...</p>
+                </div>
+            </div>
+
+            <!-- Right Side: Mode status & Battery total pill + Close button -->
+            <div class="text-right flex items-center space-x-2.5">
+                <div class="flex flex-col items-end pointer-events-none">
+                    <span id="current-mode-header" class="text-[12px] font-semibold text-[#e4e4e7] leading-none mb-1">--</span>
+                    <div class="flex items-center text-[#71717a] text-[11px] font-medium leading-none">
+                        <svg class="w-3 h-3 mr-1" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <rect x="2" y="7" width="17" height="10" rx="2.5" stroke-width="1.8"/>
+                            <rect x="4" y="9" width="11" height="6" rx="1" fill="currentColor"/>
+                            <path d="M21 10.5v3" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span id="battery-summary">--%</span>
+                    </div>
+                </div>
+
+                <!-- Subtle Hide Button -->
+                <button class="text-[#71717a] hover:text-[#fafafa] hover:bg-[#27272a] p-1 rounded-full transition cursor-pointer" onclick="hideWindow()" title="Hide to Tray">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Card 2: Noise Control (Scaled Down & Borderless) -->
+        <div class="card-bg px-3 py-2.5">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-[13px] font-semibold text-[#fafafa] tracking-tight">Noise Control</h2>
+                <span id="current-mode-sub" class="text-[11px] text-[#71717a] font-medium">Transparency</span>
+            </div>
+
+            <div class="flex justify-center space-x-6">
+                <!-- ANC ON: Waveform with minus badge -->
+                <button id="btn-on" class="btn-circle w-[52px] h-[52px] rounded-full flex items-center justify-center focus:outline-none" onclick="sendCmd('anc_on')" title="Noise Cancellation">
+                    <svg class="w-6 h-6 text-current" viewBox="0 0 24 24">
+                        <rect x="3.5" y="7.5" width="2" height="9" rx="1" fill="currentColor"/>
+                        <rect x="7.5" y="4.5" width="2" height="15" rx="1" fill="currentColor"/>
+                        <rect x="11.5" y="6.5" width="2" height="11" rx="1" fill="currentColor"/>
+                        <circle cx="17.5" cy="15.5" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        <line x1="15.5" y1="15.5" x2="19.5" y2="15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+
+                <!-- TRANSPARENCY: Refined Apple SF Symbol ear with acoustic sound waves -->
+                <button id="btn-trans" class="btn-circle-active w-[52px] h-[52px] rounded-full flex items-center justify-center focus:outline-none" onclick="sendCmd('anc_trans')" title="Transparency">
+                    <svg class="w-6 h-6 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M 6.5 4.5 C 4.2 4.5 2.8 6.5 2.8 9.2 C 2.8 11.8 4 13.8 5 15 C 5.8 16 6.5 17 6.5 18 A 1.5 1.5 0 0 0 8 19.5 A 1.5 1.5 0 0 0 9.5 18 C 9.5 16.5 8.2 15.5 7.2 14.5 C 6.5 13.8 5 12.5 5 9.5 C 5 7.5 6 6.2 7.5 6.2 C 9 6.2 9.8 7.5 9.8 9 C 9.8 10 9.2 10.8 8.5 11.2" stroke-width="1.8" />
+                        <path d="M 13 9.5 A 3.8 3.8 0 0 1 13 14.5" stroke-width="2" />
+                        <path d="M 16.2 7.5 A 7 7 0 0 1 16.2 16.5" stroke-width="2" />
+                        <path d="M 19.5 5.5 A 10.2 10.2 0 0 1 19.5 18.5" stroke-width="2" />
+                    </svg>
+                </button>
+
+                <!-- OFF: Clean circle -->
+                <button id="btn-off" class="btn-circle w-[52px] h-[52px] rounded-full flex items-center justify-center focus:outline-none" onclick="sendCmd('anc_off')" title="Off">
+                    <svg class="w-6 h-6 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="7.5" stroke-width="2.3"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Card 3: Equalizer (Pill buttons, borderless) -->
+        <div class="card-bg px-3 py-2.5">
+            <div class="flex justify-between items-center mb-1.5">
+                <h2 class="text-[13px] font-semibold text-[#fafafa] tracking-tight">Equalizer</h2>
+                <span id="current-eq-sub" class="text-[11px] text-[#71717a] font-medium">Balanced</span>
+            </div>
+            <div class="flex space-x-2">
+                <button id="eq-bal" class="btn-pill-active flex-1 py-2 rounded-xl text-[12.5px] font-semibold focus:outline-none" onclick="sendCmd('eq_balanced')">Balanced</button>
+                <button id="eq-bass" class="btn-pill flex-1 py-2 rounded-xl text-[12.5px] font-semibold focus:outline-none" onclick="sendCmd('eq_bass')">Bass</button>
+                <button id="eq-ser" class="btn-pill flex-1 py-2 rounded-xl text-[12.5px] font-semibold focus:outline-none" onclick="sendCmd('eq_serenade')">Serenade</button>
+            </div>
+        </div>
+
+        <!-- Card 4: Battery Details (Borderless boxes) -->
+        <div class="card-bg px-3 py-2.5">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-[13px] font-semibold text-[#fafafa] tracking-tight">Battery</h2>
+                <button class="bg-[#27272a] hover:bg-[#3f3f46] text-[#d4d4d8] text-[11px] px-2.5 py-1 rounded-lg flex items-center transition font-semibold cursor-pointer" onclick="sendCmd('battery')">
+                    <svg class="w-3 h-3 mr-1" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.8 1 6.5 2.7L21 8"/>
+                        <path d="M21 3v5h-5"/>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+
+            <!-- Battery Grid -->
+            <div class="grid grid-cols-4 gap-2 text-center">
+                <!-- Total -->
+                <div class="inner-box py-2.5 px-1 flex flex-col items-center justify-center">
+                    <svg class="w-[18px] h-[18px] text-[#a1a1aa] mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="2.5" y="7" width="16" height="10" rx="2.5" stroke-width="1.8"/>
+                        <rect x="4.5" y="9" width="10" height="6" rx="1.2" fill="currentColor"/>
+                        <path d="M20.5 10.5v3" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span class="text-[9.5px] text-[#71717a] font-semibold mb-0.5 uppercase tracking-wider">Total</span>
+                    <span id="stat-total" class="text-[15px] font-bold text-white leading-none">--%</span>
+                </div>
+
+                <!-- L: Sleek Left Earbud silhouette matching user reference Image 2 -->
+                <div class="inner-box py-2.5 px-1 flex flex-col items-center justify-center">
+                    <svg class="w-[18px] h-[18px] text-[#a1a1aa] mb-1" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M 8.5 6.5 C 7 6.5 6 7.3 6 8 C 6 8.7 7 9.5 8.5 9.5 Z"/>
+                        <circle cx="12" cy="8" r="4.2"/>
+                        <circle cx="12" cy="8" r="1.4" fill="#0e0e11"/>
+                        <rect x="10.5" y="10.5" width="3" height="8.5" rx="1.5"/>
+                    </svg>
+                    <span class="text-[9.5px] text-[#71717a] font-semibold mb-0.5 uppercase tracking-wider">L</span>
+                    <span id="stat-l" class="text-[15px] font-bold text-white leading-none">--%</span>
+                </div>
+
+                <!-- R: Symmetric Mirrored Right Earbud silhouette matching user reference Image 2 -->
+                <div class="inner-box py-2.5 px-1 flex flex-col items-center justify-center">
+                    <svg class="w-[18px] h-[18px] text-[#a1a1aa] mb-1" viewBox="0 0 24 24" fill="currentColor" style="transform: scaleX(-1);">
+                        <path d="M 8.5 6.5 C 7 6.5 6 7.3 6 8 C 6 8.7 7 9.5 8.5 9.5 Z"/>
+                        <circle cx="12" cy="8" r="4.2"/>
+                        <circle cx="12" cy="8" r="1.4" fill="#0e0e11"/>
+                        <rect x="10.5" y="10.5" width="3" height="8.5" rx="1.5"/>
+                    </svg>
+                    <span class="text-[9.5px] text-[#71717a] font-semibold mb-0.5 uppercase tracking-wider">R</span>
+                    <span id="stat-r" class="text-[15px] font-bold text-white leading-none">--%</span>
+                </div>
+
+                <!-- Case: Clean Earbuds Case capsule matching user reference Image 2 -->
+                <div class="inner-box py-2.5 px-1 flex flex-col items-center justify-center">
+                    <svg class="w-[18px] h-[18px] text-[#a1a1aa] mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3.5" y="6.5" width="17" height="11" rx="4" stroke-width="1.8"/>
+                        <line x1="3.5" y1="10" x2="20.5" y2="10" stroke-width="1.3" stroke-linecap="round"/>
+                        <circle cx="12" cy="13.5" r="1.1" fill="currentColor"/>
+                    </svg>
+                    <span class="text-[9.5px] text-[#71717a] font-semibold mb-0.5 uppercase tracking-wider">Case</span>
+                    <span id="stat-case" class="text-[15px] font-bold text-white leading-none">--%</span>
+                </div>
+            </div>
+
+            <div id="updated-time" class="text-[11px] text-[#71717a] font-medium mt-1.5 text-center h-[16px] leading-[16px]" style="visibility: hidden;">
+                &nbsp;
+            </div>
+        </div>
+
+        <!-- Footer Action Buttons (Borderless) -->
+        <div class="flex justify-between items-center px-0.5 pt-0.5 pb-0">
+            <button class="bg-[#007aff] hover:bg-[#0062cc] active:bg-[#0051a8] text-white text-[12px] font-semibold py-2 px-4 rounded-xl transition flex items-center focus:outline-none cursor-pointer" onclick="connectBuds()">
+                <svg class="w-3.5 h-3.5 mr-1.5" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M21 12a9 9 0 0 0-15.5-6.4L3 8"/>
+                    <polyline points="3 3 3 8 8 8"/>
+                    <path d="M3 12a9 9 0 0 0 15.5 6.4L21 16"/>
+                    <polyline points="21 21 21 16 16 16"/>
+                </svg>
+                Reconnect
+            </button>
+            <button class="bg-[#27272a] hover:bg-[#3f3f46] active:bg-[#18181b] text-[#e4e4e7] text-[12px] font-semibold py-2 px-5 rounded-xl transition focus:outline-none cursor-pointer" onclick="quitApp()">
+                Quit
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Script that connects to Tauri -->
+    <script>
+        function getInvoke() {
+            if (window.__TAURI__) {
+                if (typeof window.__TAURI__.invoke === 'function') return window.__TAURI__.invoke;
+                if (window.__TAURI__.tauri && typeof window.__TAURI__.tauri.invoke === 'function') return window.__TAURI__.tauri.invoke;
+            }
+            return null;
+        }
+
+        function getListen() {
+            if (window.__TAURI__) {
+                if (window.__TAURI__.event && typeof window.__TAURI__.event.listen === 'function') return window.__TAURI__.event.listen;
+                if (window.__TAURI__.tauri && window.__TAURI__.tauri.event && typeof window.__TAURI__.tauri.event.listen === 'function') return window.__TAURI__.tauri.event.listen;
+            }
+            return null;
+        }
+
+        function initApp() {
+            const listen = getListen();
+            if (listen) {
+                listen('battery-update', (ev) => {
+                    let b = ev.payload;
+                    if (b.left !== undefined) document.getElementById('stat-l').innerText = b.left + "%";
+                    if (b.right !== undefined) document.getElementById('stat-r').innerText = b.right + "%";
+                    if (b.case !== undefined && b.case > 0) document.getElementById('stat-case').innerText = b.case + "%";
+
+                    let l = b.left || 0;
+                    let r = b.right || 0;
+                    let total = (l > 0 && r > 0) ? Math.min(l, r) : (l || r || 0);
+                    if (total > 100) total = 0;
+                    document.getElementById('stat-total').innerText = total + "%";
+                    document.getElementById('battery-summary').innerText = total + "%";
+
+                    const timeElem = document.getElementById('updated-time');
+                    const now = new Date();
+                    timeElem.innerText = "Updated " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    timeElem.style.visibility = 'visible';
+                });
+
+                listen('anc-update', (ev) => {
+                    if (ev.payload && ev.payload.mode) {
+                        updateActiveButton(ev.payload.mode);
+                    }
+                });
+            }
+
+            // Auto-connect on startup
+            setTimeout(connectBuds, 250);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+
+        function hideWindow() {
+            if (window.__TAURI__ && window.__TAURI__.window && window.__TAURI__.window.appWindow) {
+                window.__TAURI__.window.appWindow.hide();
+            } else {
+                window.close();
+            }
+        }
+
+        async function quitApp() {
+            const invoke = getInvoke();
+            if (invoke) {
+                try {
+                    await invoke('quit_app');
+                } catch(e) {
+                    window.close();
+                }
+            } else {
+                window.close();
+            }
+        }
+
+        let isConnecting = false;
+        async function connectBuds() {
+            if (isConnecting) return;
+            isConnecting = true;
+
+            const invoke = getInvoke();
+            if (!invoke) {
+                document.getElementById('status-text').innerText = "Waiting for app...";
+                setTimeout(() => {
+                    isConnecting = false;
+                    connectBuds();
+                }, 300);
+                return;
+            }
+
+            document.getElementById('status-text').innerText = "Connecting...";
+            document.getElementById('status-text').style.color = "#a1a1aa";
+            document.getElementById('current-mode-header').innerText = "Connecting";
+
+            try {
+                let res = await invoke('connect_device');
+
+                // Show clean "Connected" without device name
+                document.getElementById('status-text').innerText = "Connected";
+                document.getElementById('status-text').style.color = "#4ade80"; // Crisp green
+                document.getElementById('current-mode-header').innerText = "Transparency";
+
+                // Ensure initial modes are visually active
+                updateActiveButton('anc_trans');
+                updateActiveButton('eq_balanced');
+
+                // Query initial battery
+                sendCmd('battery');
+            } catch (e) {
+                console.error("Connection failed:", e);
+                let errStr = String(e || "Not found");
+                document.getElementById('status-text').innerText = errStr.length > 25 ? "Disconnected" : errStr;
+                document.getElementById('status-text').style.color = "#f87171";
+                document.getElementById('current-mode-header').innerText = "Disconnected";
+            } finally {
+                isConnecting = false;
+            }
+        }
+
+        function updateActiveButton(mode) {
+            if (mode === 'anc_on' || mode === 'anc_trans' || mode === 'anc_off') {
+                ['btn-on', 'btn-trans', 'btn-off'].forEach(id => {
+                    let btn = document.getElementById(id);
+                    btn.className = "btn-circle w-[52px] h-[52px] rounded-full flex items-center justify-center focus:outline-none";
+                });
+
+                let activeId = mode === 'anc_on' ? 'btn-on' : mode === 'anc_trans' ? 'btn-trans' : 'btn-off';
+                let btn = document.getElementById(activeId);
+                btn.className = "btn-circle-active w-[52px] h-[52px] rounded-full flex items-center justify-center focus:outline-none";
+
+                let modeText = mode === 'anc_on' ? 'Noise Cancellation' : mode === 'anc_trans' ? 'Transparency' : 'Off';
+                document.getElementById('current-mode-sub').innerText = modeText;
+                document.getElementById('current-mode-header').innerText = modeText;
+            }
+
+            if (mode.startsWith('eq_')) {
+                ['eq-bal', 'eq-bass', 'eq-ser'].forEach(id => {
+                    document.getElementById(id).className = "btn-pill flex-1 py-2 rounded-xl text-[12.5px] font-semibold focus:outline-none";
+                });
+
+                let activeId = mode === 'eq_balanced' ? 'eq-bal' : mode === 'eq_bass' ? 'eq-bass' : 'eq-ser';
+                document.getElementById(activeId).className = "btn-pill-active flex-1 py-2 rounded-xl text-[12.5px] font-semibold focus:outline-none";
+
+                let eqText = mode === 'eq_balanced' ? 'Balanced' : mode === 'eq_bass' ? 'Bass' : 'Serenade';
+                document.getElementById('current-eq-sub').innerText = eqText;
+            }
+        }
+
+        async function sendCmd(mode) {
+            const invoke = getInvoke();
+            if (!invoke) return;
+
+            if (mode !== 'battery') { updateActiveButton(mode); }
+
+            try {
+                let response = await invoke('send_anc_command', { mode: mode });
+                console.log("Rust replied:", response);
+            } catch (e) {
+                console.error("Failed to send command:", e);
+                if (mode !== 'battery') {
+                    document.getElementById('status-text').innerText = "Disconnected";
+                    document.getElementById('status-text').style.color = "#f87171";
+                    document.getElementById('current-mode-header').innerText = "Disconnected";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

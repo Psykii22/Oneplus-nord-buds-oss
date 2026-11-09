@@ -1,0 +1,40 @@
+{
+  "build": {
+    "devPath": "../src",
+    "distDir": "../src",
+    "withGlobalTauri": true
+  },
+  "package": {
+    "productName": "NordBuds",
+    "version": "0.1.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": true
+    },
+    "bundle": {
+      "active": true,
+      "identifier": "com.nordbuds.app"
+    },
+    "security": {
+      "csp": null
+    },
+    "systemTray": {
+      "iconPath": "icons/tray.ico",
+      "iconAsTemplate": true
+    },
+    "windows": [
+      {
+        "decorations": false,
+        "transparent": true,
+        "fullscreen": false,
+        "height": 480,
+        "resizable": false,
+        "skipTaskbar": true,
+        "title": "Nord Buds",
+        "visible": true,
+        "width": 380
+      }
+    ]
+  }
+}
