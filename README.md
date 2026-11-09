@@ -6,6 +6,15 @@ The application operates without the proprietary HeyMelody mobile application or
 
 ---
 
+## Demonstration
+
+https://github.com/Psykii22/Oneplus-nord-buds-oss/raw/main/assets/demo.mp4
+
+> [!NOTE]
+> If your browser does not render the inline HTML5 player above, you can access the demo video directly at [assets/demo.mp4](assets/demo.mp4).
+
+---
+
 ## Architectural Overview
 
 The application is built on **Tauri** (Rust + Webview2), decoupling the low-level Bluetooth GATT communication from a hardware-accelerated, borderless translucent frontend.
