@@ -7,11 +7,8 @@ The application operates without the proprietary HeyMelody mobile application or
 ---
 
 ## Demonstration
+
 https://github.com/user-attachments/assets/143addbf-dd58-4144-a304-59f0b0d15f62
-
-
-> [!NOTE]
-> If your browser does not render the inline HTML5 player above, you can access the demo video directly at [assets/demo.mp4](assets/demo.mp4).
 
 ---
 
@@ -248,7 +245,7 @@ By default, the Windows Bluetooth Low Energy runtime performs uncached descripto
 - **Benchmark Result**: Discovery latency dropped from **>25 seconds** to **1.85 seconds**.
 
 ### 3. Windows BLE Scanning & Paired Device Discovery
-When earbuds are actively connected for audio streaming, Windows stops broadcasting standard BLE advertisement packets. The application mitigates this by extending scan times to 3–5 seconds and falling back to direct enumeration over `central.peripherals()` (Windows' internal paired cache).
+When earbuds are actively connected for audio streaming, Windows stops broadcasting standard BLE advertisement packets. The application mitigates this by extending scan times to 3-5 seconds and falling back to direct enumeration over `central.peripherals()` (Windows' internal paired cache).
 
 ### 4. Dynamic TLV Battery Parsing
 Initial fixed-offset parsing failed because OnePlus firmware streams battery levels as variable-length Type-Length-Value (TLV) pairs. The parser dynamically reads the pair count at offset 10 and safely extracts each component key (`01` = Left, `02` = Right, `03` = Case) and percentage.
@@ -274,7 +271,7 @@ Standard OS mutexes (`std::sync::MutexGuard`) cannot cross asynchronous `.await`
 
 The OnePlus/Oppo/Realme audio hardware ecosystem (BBK Electronics) utilizes a unified proprietary protocol family designated **OPOv1**. Devices across this family share the same underlying GATT architecture, framing, and command semantics.
 
-If you own another pair of compatible earbuds—such as the **OnePlus Nord Buds 2**, **OnePlus Buds Pro 2**, or **Oppo Enco Air** series—you can easily test and add support to this application.
+If you own another pair of compatible earbuds (such as the **OnePlus Nord Buds 2**, **OnePlus Buds Pro 2**, or **Oppo Enco Air** series), you can easily test and add support to this application.
 
 ### Compatible Device Family
 
@@ -293,9 +290,9 @@ If you own another pair of compatible earbuds—such as the **OnePlus Nord Buds 
 | **GATT Service & Characteristics** | `0000079A` (Service), `0100079A` (Write), `0200079A` (Notify) | None |
 | **Packet Framing** | Magic byte `0xAA`, sequence flags, category bytes | None |
 | **Battery Telemetry Query** | `AA 07 00 00 06 01 25 00 00` | None (TLV structure is universal) |
-| **Device Name Filtering** | — | Device Bluetooth advertising name |
-| **Authentication Token** | — | Some models use token `B5 50 A0 69`; others use a device-specific 4-byte hash |
-| **ANC Mode Indices** | — | Basic models use `01/02/04`; multi-level ANC models (Buds Pro) may support `01/02/03/04` |
+| **Device Name Filtering** | - | Device Bluetooth advertising name |
+| **Authentication Token** | - | Some models use token `B5 50 A0 69`; others use a device-specific 4-byte hash |
+| **ANC Mode Indices** | - | Basic models use `01/02/04`; multi-level ANC models (Buds Pro) may support `01/02/03/04` |
 
 ---
 
